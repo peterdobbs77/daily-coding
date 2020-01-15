@@ -17,5 +17,7 @@ What if, instead of being able to climb 1 or 2 steps at a time, you could climb 
 >       (N-X_1)  (N-X_2)  (N-X_m)
 >      /            \            \
 >  ((N-X_1)-X_2)  ((N-X_2)-X_m)  ((N-X_m)-X_1)
->
+>           \
+>      (((N-X_1)-X_2)-X_1)
+
 * Therefore we can use recursion to count the leaves on the tree
