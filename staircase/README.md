@@ -12,7 +12,7 @@ What if, instead of being able to climb 1 or 2 steps at a time, you could climb 
 ## My Thoughts
 * Consider this problem like a classic tree-traversal problem
 * The tree is constructed by the idea that each branch is subtracting some amount from its base. For visual purposes:
->                       N
+>                      N
 >                 /    |    \
 >          (N-X_1)  (N-X_2)  (N-X_m)
 >         /            \            \
