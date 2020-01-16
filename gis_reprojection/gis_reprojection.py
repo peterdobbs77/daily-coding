@@ -37,11 +37,6 @@ def plot_shape(shp_path):
                 patch = PolygonPatch(polygon, facecolor=[
                                      1, 1, 1], alpha=1.0, zorder=0)
                 ax.add_patch(patch)
-        # annotate the shape with label in data
-        # center_x = shape.bbox[0]+((shape.bbox[2]-shape.bbox[0])/2)
-        # center_y = shape.bbox[1]+((shape.bbox[3]-shape.bbox[1])/2)
-        # ax.annotate(shp.record(i)[1], xy=(center_x, center_y), color='tan',
-        #             ha='center', va='center', fontsize=21)
 
     # SET VIEW TO WITHIN EXPECTED BOUNDS OF CITY OF MKE
     plt.xlim(shp.bbox[0], shp.bbox[2])
@@ -82,11 +77,6 @@ def plot_locations_on_mke_map(points):
                 patch = PolygonPatch(polygon, facecolor=[
                                      1, 1, 1], alpha=1.0, zorder=0)
                 ax.add_patch(patch)
-        # annotate the shape with label in data
-        # center_x = shape.bbox[0]+((shape.bbox[2]-shape.bbox[0])/2)
-        # center_y = shape.bbox[1]+((shape.bbox[3]-shape.bbox[1])/2)
-        # ax.annotate(shp.record(i)[1], xy=(center_x, center_y), color='tan',
-        #             ha='center', va='center', fontsize=21)
 
     # ADD ADDRESS GEOCOORDINATES AS POINTS
     # plt.scatter(points.x, points.y, s=20, c="cyan")

@@ -20,3 +20,5 @@ In the interest of time, I will be reusing some of the [code from my previous wo
 
 The shape file(s) are from [Milwaukee Open Data](https://data.milwaukee.gov/). I just found a note on [this page](https://city.milwaukee.gov/DownloadMapData3497.htm#.XiC1e8hKi70) that mentions that "All shapefiles are in State Plane South NAD27." I have found that is a Coordinate Reference Systems (CRS). That CRS is different than the CRS used by OpenStreetMap (WGS-84), which I am using to get the coordinates for the addresses of the registered liquor licenses. *Progress!*
 
+
+
