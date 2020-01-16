@@ -13,3 +13,7 @@ While working on a side project to display open data on a GIS map of Milwaukee -
 I didn't understand why the geolocations I was retrieving from Nominatim wouldn't overlay onto the shape file I got from the Milwaukee Open Data project. This frustrated me so I left it alone for a while. After a few weeks away from my frustration I stumbled upon [**this link**](https://www.earthdatascience.org/workshops/gis-open-source-python/reproject-vector-data-in-python/)! It turns out that there are different Coordinate Reference Systems (CRS) for organizing spatial data sets.
 
 So let's get this started.
+
+## Implementation
+
+In the interest of time, I will be reusing code from my previous work. You can check out the rest of my work [here](https://github.com/peterdobbs77/pop_health_mke/).
