@@ -16,4 +16,7 @@ So let's get this started.
 
 ## Implementation
 
-In the interest of time, I will be reusing code from my previous work. You can check out the rest of my work [here](https://github.com/peterdobbs77/pop_health_mke/).
+In the interest of time, I will be reusing some of the [code from my previous work](https://github.com/peterdobbs77/pop_health_mke/blob/0610f234bc765bbb58c732fb8836cc62598bf3e2/try_graph_liq.py).
+
+The shape file(s) are from [Milwaukee Open Data](https://data.milwaukee.gov/). I just found a note on [this page](https://city.milwaukee.gov/DownloadMapData3497.htm#.XiC1e8hKi70) that mentions that "All shapefiles are in State Plane South NAD27." I have found that is a Coordinate Reference Systems (CRS). That CRS is different than the CRS used by OpenStreetMap (WGS-84), which I am using to get the coordinates for the addresses of the registered liquor licenses. *Progress!*
+
