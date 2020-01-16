@@ -1,8 +1,10 @@
 # gis_reprojection
 
+## Background
+
 I missed the first challenge from Daily Coding Problem, since I forgot to verify my email :sob:. So I decided to try out something I have been meaning to explore since I worked on a GIS project a few semesters ago...
 
-While working on a side project to display open data on a GIS map of Milwaukee - [link to Python file in GitHub project](https://github.com/peterdobbs77/pop_health_mke/blob/master/try_graph_liq.py), I found that there are some odd differences between the way that various data sources are geospatially encoded. For example, here's one of my attempts to plot the location of registered liquor licenses around Milwaukee:
+While working on a side project to display open data on a GIS map of Milwaukee - [link to Python file in GitHub project](https://github.com/peterdobbs77/pop_health_mke/), I found that there are some odd differences between the way that various data sources are geospatially encoded. For example, here's one of my attempts to plot the location of registered liquor licenses around Milwaukee:
 
 ![Example of weird geospatial encodings](images/1574635489.651701.png)
 
