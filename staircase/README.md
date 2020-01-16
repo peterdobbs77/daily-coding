@@ -27,3 +27,7 @@ What if, instead of being able to climb 1 or 2 steps at a time, you could climb 
 * Let *N* be the number of steps on a staircase
 * Let *X* be the set of *m* possible step sizes you can take to climb the stairs
 * Let *Y* be the number of unique ways to climb *N* steps
+
+## Miscellaneous
+
+Written in Visual Studio Code and programmed in Python 3.7.4 32-bit.
