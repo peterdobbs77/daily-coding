@@ -17,6 +17,5 @@ def check_if_sums(X, k):
 X = [15, 3, 10, 7]
 k = 17
 
-print(len(X))
 result = check_if_sums(X, k)
 print(result)
