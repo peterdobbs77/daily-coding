@@ -1,7 +1,6 @@
 # Let X be a random list of numbers
 # Let k be a random number
 # Return whether any two numbers from the list add up to k
-import numpy as np
 
 
 def check_if_sums(X, k):
