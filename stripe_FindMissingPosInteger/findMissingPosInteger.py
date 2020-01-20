@@ -28,9 +28,22 @@ def findMissingPosInteger(X):
     return count.index(0) + 1  # account for index shift in final answer
 
 
+def bitwise_xor(X):
+    res = 0
+    for i in range(len(X)):
+        if(X[i] > 0):
+            res ^= X[i]
+    return res
+
+
 assert findMissingPosInteger([3, 4, -1, 1]) == 2
 assert findMissingPosInteger([1, 2, 0]) == 3
 
 li = [i for i in range(23)]
 li.remove(13)
 assert findMissingPosInteger(li) == 13
+
+
+print("{} -> {}".format([3, 4, -1, 1], bitwise_xor([3, 4, -1, 1])))
+print("{} -> {}".format([1, 2, 0], bitwise_xor([1, 2, 0])))
+print("{} -> {}".format([3, 1, 2, 0], bitwise_xor([3, 1, 2, 0])))
