@@ -9,7 +9,7 @@
 # Thoughts:
 #   After doing some reading, I've arrived at an idea. I think I need
 #   to implement a version of the count_sort algorithm that only
-#   considers positive integers
+#   considers positive integers. But this isn't constant space... :(
 
 
 def findMissingPosInteger(X):
