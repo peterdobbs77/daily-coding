@@ -7,3 +7,7 @@ Given an array of integers, find the first missing positive integer in linear ti
 For example, the input `[3, 4, -1, 1]` should give `2`. The input `[1, 2, 0]` should give `3`.
 
 You can modify the input array in-place.
+
+## Implementation
+
+My first pass attempt at this challenge satisfies the "linear time" constraint, but not the "constant space" requirement. A modification to the count_sort algorithm provides a solution in linear time, but requires an additional array for counting the occurences of entries in the input array.
