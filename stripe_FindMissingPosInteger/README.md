@@ -10,4 +10,4 @@ You can modify the input array in-place.
 
 ## Implementation
 
-My first pass attempt at this challenge satisfies the "linear time" constraint, but not the "constant space" requirement. A modification to the count_sort algorithm provides a solution in linear time, but requires an additional array for counting the occurences of entries in the input array.
+My first pass attempt at this challenge satisfies the "linear time" constraint, but not the "constant space" requirement. A modification to the count_sort algorithm provides a solution in linear time, but requires an additional array for counting the occurences of entries in the input array. So what can we do to fix this issue?

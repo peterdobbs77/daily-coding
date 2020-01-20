@@ -12,17 +12,17 @@
 #   considers positive integers
 
 
-def findMissingPosInteger(arr):
-    # find the maximum value in `arr` = O(n)
-    maxA = max(arr)
+def findMissingPosInteger(X):
+    # find the maximum value in `X` = O(n)
+    maxX = max(X)
 
     # add 1 for if lowest decimal is greater than the maximum decimal in the list
-    count = [0 for i in range(maxA+1)]
+    count = [0 for i in range(maxX+1)]
 
     # store count of each number in `arr` = O(n)
-    for a_i in arr:
-        if(a_i > 0):
-            count[a_i-1] += 1
+    for x_i in X:
+        if(x_i > 0):
+            count[x_i-1] += 1
             # shift indexing down for only positive integers
 
     return count.index(0) + 1  # account for index shift in final answer
