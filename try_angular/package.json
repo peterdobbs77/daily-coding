@@ -1,6 +1,0 @@
-{
-  "name": "try_angular",
-  "dependencies": {
-    "angular-schema-form": "^0.8.13"
-  }
-}
