@@ -7,3 +7,8 @@ Run-length encoding is a fast and simple method of encoding strings. The basic i
 Implement run-length encoding and decoding. You can assume the string to be encoded have no digits and consists solely of alphabetic characters. You can assume the string to be decoded is valid.
 
 ## Implementation
+
+Let's make a few additional assumptions to make our lives easier
+ * Assume that the input string does not have more than 9 successive same characters
+
+Depending on how you want to pass through the string, you have to deal with complications at the start and end of the string.
