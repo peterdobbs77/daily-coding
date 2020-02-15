@@ -41,7 +41,5 @@ def text_justify(words, k):
 words = ["the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"]
 k = 16
 
-print(text_justify(words, k))
-
-# assert text_justify(words, k) == [
-#    "the  quick brown", "fox  jumps  over", "the   lazy   dog"]
+assert text_justify(words, k) == [
+   "the  quick brown", "fox  jumps  over", "the   lazy   dog"]
