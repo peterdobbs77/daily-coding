@@ -10,4 +10,5 @@ Given two strings, compute the edit distance between them.
 
 ## Implementation
 
-Ah yes, an alignment problem. I've encountered this question before in [peterdobbs77/bioc_c_cpp](https://github.com/peterdobbs77/bioc_c_cpp). But I did in C and this will be in Python. 
+Ah yes, an alignment problem. I've encountered this question before in [peterdobbs77/bioc_c_cpp](https://github.com/peterdobbs77/bioc_c_cpp). I did that program in C while this will be in Python. Also, the previous algorithm was much more intensive, as it required construction of a full comparison matrix. This program just needs to how many differences there are between two strings.
+
