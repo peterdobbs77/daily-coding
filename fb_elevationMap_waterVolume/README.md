@@ -14,4 +14,6 @@ Given the input `[3, 0, 1, 3, 0, 5]`, we can hold 3 units in the first index, 2 
 
 ## Implementation
 
-So I got a little distracted by overcomplicating the system, but I took a step back and figured it out. First, we can't start collecting water until we hit a maximum point, or a wall taller than the next space. But, we also can't collect water in that full space if there isn't another wall of same or greater height following that wall.
+So I got a little distracted by overcomplicating the system, but I took a step back and figured it out. First, we can't start collecting water until we hit a maximum point, or a wall taller than the next space. So we can identify that local maxima are important for solving this problem.
+
+We can start by looping until we reach a local maximum. Then, we start adding the difference between that local maximum and the next wall element. When we reach a maximum point greater than the previous local maximum, that becomes the new height for determining the difference. This is flawed since if the global maximum is unique and occurs very early in the array, then we will always be adding an extra amount to the sum. 
