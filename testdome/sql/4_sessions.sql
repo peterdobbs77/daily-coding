@@ -1,7 +1,12 @@
---TABLE students
+--TABLE sessions
 --  id INTEGER PRIMARY KEY,
---  firstName VARCHAR(30) NOT NULL,
---  lastName VARCHAR(30) NOT NULL
+--  userId INTEGER NOT NULL,
+--  duration DECIMAL NOT NULL
 
 
-select count(id) from students where firstname='John'
+select userId, avg_dur from (
+  select userId, AVG(duration) as avg_dur, COUNT(id) as num 
+  from sessions
+  group by userId
+) calc
+where num>1
