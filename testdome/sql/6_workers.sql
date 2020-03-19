@@ -1,7 +1,13 @@
---TABLE students
---  id INTEGER PRIMARY KEY,
---  firstName VARCHAR(30) NOT NULL,
---  lastName VARCHAR(30) NOT NULL
+--TABLE employees
+--  id INTEGER NOT NULL PRIMARY KEY
+--  managerId INTEGER REFERENCES employees(id)
+--  name VARCHAR(30) NOT NULL
 
 
-select count(id) from students where firstname='John'
+select name from (
+  select * from employees 
+) underlings
+where not exists (
+  select * from employees 
+  where managerId = underlings.id
+)
