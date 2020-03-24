@@ -2,6 +2,7 @@ import numpy as np
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
+from sklearn import neighbors
 
 def train_and_predict(train_input_features, train_outputs, prediction_features):
     """
@@ -16,6 +17,10 @@ def train_and_predict(train_input_features, train_outputs, prediction_features):
     :returns: (list) The function should return an iterable (like list or numpy.ndarray) of the predicted 
                         iris species, one for each item in prediction_features
     """   
+    classifier = neighbors.KNeighborsClassifier()
+    classifier.fit(train_input_features,train_outputs)
+    predictions=classifier.predict(prediction_features)
+    return predictions
     
 
 iris = datasets.load_iris()
