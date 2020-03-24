@@ -8,7 +8,19 @@ def desired_marketing_expenditure(marketing_expenditure, units_sold, desired_uni
     :param desired_units_sold: (integer) Target number of units to sell in the new campaign.
     :returns: (float) Required amount of money to be invested.
     """
-    return None
+    # prep data
+    X = np.array(marketing_expenditure)
+    X = X.reshape(-1,1)
+    Y = np.array(units_sold)
+    Y = Y.reshape(-1,1)
+    # fit model
+    slr = linear_model.LinearRegression()
+    slr.fit(X,Y)
+    #print ('Slope =', slr.coef_[0])
+    #print ('Intercept =', slr.intercept_)
+    # use model parameters to predict
+    ypred = (desired_units_sold - slr.intercept_)/(slr.coef_[0])
+    return ypred
 
 #For example, with the parameters below, the function should return 250000.0
 print(desired_marketing_expenditure(
