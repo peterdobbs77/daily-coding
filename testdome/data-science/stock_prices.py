@@ -8,7 +8,12 @@ def most_corr(prices):
     :returns: (container of strings) A container, containing the two tickers that 
               are the most highly (linearly) correlated by daily percentage change.
     """
-    return None
+    differences = prices.diff(axis=0)
+    c = differences.corr().abs()
+    #print(c)
+    c_triu = c.where(~np.tril(np.ones(c.shape)).astype(np.bool))
+    c_triu = c_triu.stack()
+    return c_triu.idxmax()
 
 #For example, the code below should print: ('FB', 'MSFT')
 print(most_corr(pd.DataFrame.from_dict({
