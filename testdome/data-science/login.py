@@ -9,6 +9,8 @@ def login_table(id_name_verified, id_password):
     :returns: (None) The function should modify id_name_verified DataFrame in-place. 
               It should not return anything.
     """   
+    id_name_verified.drop(['Verified'],inplace=True,axis=1)
+    id_name_verified['Password'] = id_password[:,1]
     pass
 
 id_name_verified = pd.DataFrame([[1, "JohnDoe", True], [2, "AnnFranklin", False]], columns=["Id", "Login", "Verified"])
