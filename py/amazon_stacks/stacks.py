@@ -24,26 +24,25 @@ class Stack:
             if self._array[i] > _max:
                 _max = self._array[i]
         return _max
-
     
     def display(self):
         print(self._array)
 
 
 myFirstStack = Stack(5)
-print(myFirstStack.display())
+myFirstStack.display()
 print(f'Max element: {myFirstStack.max()} (should be None/null/error)')
 myFirstStack.push(10)
 myFirstStack.push(20)
 myFirstStack.push(0)
 print(f'Popped element: {myFirstStack.pop()} (should be 0)')
 print(f'Max element: {myFirstStack.max()} (should be 20)')
-print(myFirstStack.display())
+myFirstStack.display()
 myFirstStack.push(15)
 myFirstStack.push(-50)
 myFirstStack.push(50)
-print(myFirstStack.display())
+myFirstStack.display()
 print(f'Max element: {myFirstStack.max()} (should be 50)')
 print(f'Popped element: {myFirstStack.pop()} (should be 50)')
-print(myFirstStack.display())
+myFirstStack.display()
 print(f'Max element: {myFirstStack.max()} (should be 20)')
