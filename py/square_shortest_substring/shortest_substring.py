@@ -9,7 +9,7 @@
 
 import string
 
-def shortest_substring_v1(str: string, chars: list):
+def shortest_substring_On2(str: string, chars: list):
     '''Given a string and a set of characters,
         return the shortest substring containing
         all the characters in the set.'''
@@ -44,7 +44,11 @@ def shortest_substring_v1(str: string, chars: list):
 #     for i in range(len(str)):
 #         if str[i] in chars:
 #             i_chars[chars.index(str[i])] = i
-        
 
-result = shortest_substring_v1("figehaeci", ['a', 'e', 'i'])
+# provided example
+result = shortest_substring_On2("figehaeci", ['a', 'e', 'i'])
 print(f'{result} should be "aeci"')
+
+# palindrome test
+result = shortest_substring_On2("amanaplanacanalpanama", ['a','p','c','n'])
+print(f'{result} should be "canalp" (but could equally be "planac")')
