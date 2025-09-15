@@ -49,6 +49,10 @@ def shortest_substring_On2(str: string, chars: list):
 result = shortest_substring_On2("figehaeci", ['a', 'e', 'i'])
 print(f'{result} should be "aeci"')
 
+# another example
+result = shortest_substring_On2("adobecodebanc", ['a', 'b', 'c'])
+print(f'{result} should be "banc"')
+
 # palindrome test
 result = shortest_substring_On2("amanaplanacanalpanama", ['a','p','c','n'])
 print(f'{result} should be "canalp" (but could equally be "planac")')
