@@ -47,7 +47,6 @@ def compute_reverse_polish_notation(arr: list):
             temp.push(_result)
         else:
             temp.push(arr[i])
-        temp.display()
     return _result
 
 
@@ -56,3 +55,9 @@ print(f'{result} should be 8')
 
 result = compute_reverse_polish_notation([15, 7, 1, 1, '+', '-', '/', 3, '*', 2, 1, 1, '+', '+', '-'])
 print(f'{result} should be 5')
+
+result = compute_reverse_polish_notation([0, 0, 0, 0, '+', '-', '*'])
+print(f'{result} should be 0')
+
+result = compute_reverse_polish_notation([-25, 25, 2, 25, '*', '-', '+'])
+print(f'{result} should be 0')
