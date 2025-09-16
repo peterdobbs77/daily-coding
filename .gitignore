@@ -1,3 +1,4 @@
 
 .vscode/*
 staircase/.vscode/*
+langchain/pdf_data/*
