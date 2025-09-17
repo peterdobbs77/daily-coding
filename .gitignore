@@ -1,5 +1,6 @@
 
 .vscode/*
 staircase/.vscode/*
+langchain/docs/*
 langchain/pdf_data/*
 langchain/latex_docs/*
