@@ -2,3 +2,4 @@
 .vscode/*
 staircase/.vscode/*
 langchain/pdf_data/*
+langchain/latex_docs/*
