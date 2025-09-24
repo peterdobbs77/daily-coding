@@ -18,4 +18,4 @@ Using OpenAI api and Tavily API
 
 # References
 
-Based on lessons from the "Building and Evaluating Data Agents" course on DeepLearning.ai.
+Based on lessons from the "Building and Evaluating Data Agents" course on [DeepLearning.AI].
