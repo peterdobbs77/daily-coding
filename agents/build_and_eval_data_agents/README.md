@@ -32,7 +32,8 @@ True lense = opensource trace for agents
     1. Adjust prompts
     2. Inline evaluation
     3. Tune Retriever
-    4. Test different models
+    4. Tune specialized agent nodes
+    5. Test different models
 3. Validate improvements
 
 # Resources
