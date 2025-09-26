@@ -5,4 +5,5 @@ langchain/docs/*
 langchain/pdf_data/*
 langchain/latex_docs/*
 agents/build_and_eval_data_agents/lessons/*
+agents/knowledge_graph/lessons/*
 fhir/*
