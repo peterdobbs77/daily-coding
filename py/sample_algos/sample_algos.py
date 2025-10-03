@@ -65,8 +65,14 @@ def countSubarraysWithSumAndMaxAtMost(nums, k, M):
 def computeGroupPeakConcurrency(events: list):
     '''Given a list of `events` containing timestamp, user_id, group_id, event_type
         Return a hash map, mapping group_id to its peak count'''
+    if len(events) > 10**5:
+        return []
+
+    # sort by timestamp (assuming timestamp is the first item in each set in the list)
+    events.sort(key=lambda x: int(x[0]))
+
     active_usergroup_track = {}
-    group_peak_count = {}
+    group_peak_count = {} # should contain { group_id: peak_concurrency } value-pairs
 
     for entry in events:
         # check if users are currently active
@@ -75,6 +81,12 @@ def computeGroupPeakConcurrency(events: list):
         group_id = entry[2]
         event_type = entry[3]
 
+        # # perform consistency checks
+        # if timestamp < 0 or timestamp > 10**9 \
+        #     or user_id < 1 or user_id > 10**9 \
+        #     or group_id < 1 or group_id > 10**9:
+        #     continue
+
         if group_id not in active_usergroup_track:
             active_usergroup_track[group_id] = 0
 
@@ -82,7 +94,7 @@ def computeGroupPeakConcurrency(events: list):
             active_usergroup_track[group_id] += 1
         elif event_type == 'logout':
             active_usergroup_track[group_id] -= 1
-        
+
         if group_id not in group_peak_count:
             group_peak_count[group_id] = 0
         group_peak_count[group_id] = max(group_peak_count[group_id], active_usergroup_track[group_id])
@@ -92,7 +104,24 @@ def computeGroupPeakConcurrency(events: list):
     # but hackerrank question requires the following format
     return [[k] + [group_peak_count[k]] for k in group_peak_count]
 
-# if __name__ == '__main__':
 
-#     nums, k, M = [2, -1, 2, 1, -2, 3], 3, 2
-#     print(f"{countSubarraysWithSumAndMaxAtMost(nums, k, M)} == 2")
+def findSmallestMissingPositive(orderNumbers):
+    '''Given an unsorted array of integers, find the smallest positive integer
+        not present in the array in O(n) time and O(1) extra space.'''
+    if len(orderNumbers) == 0:
+        return 1
+
+    # reorder
+    for i in range(len(orderNumbers)):
+        while 1 <= orderNumbers[i] and orderNumbers[i] <= len(orderNumbers) \
+                and orderNumbers[orderNumbers[i]-1] != orderNumbers[i]:
+            cursor_idx = orderNumbers[i] - 1
+            # swap
+            orderNumbers[i], orderNumbers[cursor_idx] = orderNumbers[cursor_idx], orderNumbers[i]
+
+    # find mismatch
+    for i in range(len(orderNumbers)):
+        if orderNumbers[i] != i+1:
+            return i+1
+
+    return max(orderNumbers) + 1
