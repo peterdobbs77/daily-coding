@@ -137,20 +137,21 @@ class Test_calculateMinimumTimeUnits(unittest.TestCase):
         result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
         self.assertEqual(result, 1)
 
-    # def calculateMinimumTimeUnits_longDistinctTaskList(self):
-    #     # with the brute force method, this takes an unacceptable amount of time
-    #     tasks = range(10**5)
-    #     m = 2
-    #     k = 2
-    #     result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
-    #     self.assertEqual(result, len(tasks)/m)
+    def test_calculateMinimumTimeUnits_longCooldown(self):
+        tasks = [1]*4
+        m = 2
+        k = 30
+        result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
+        self.assertEqual(result, 31)
 
-    # def test_calculateMinimumTimeUnits_longCooldown(self):
-    #     tasks = [1, 1, 2, 1]
-    #     m = 2
-    #     k = 30
-    #     result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
-    #     self.assertEqual(result, len(tasks)/m)
+    def calculateMinimumTimeUnits_longDistinctTaskList(self):
+        # with the brute force method, this takes an unacceptable amount of time
+        # So, I've removed the `test_` prefix to avoid running this case for the time being
+        tasks = range(10**5)
+        m = 2
+        k = 2
+        result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
+        self.assertEqual(result, len(tasks)/m)
 
 if __name__ == '__main__':
     unittest.main()
