@@ -105,24 +105,32 @@ class Test_findSmallestMissingPositive(unittest.TestCase):
 
 class Test_calculateMinimumTimeUnits(unittest.TestCase):
 
-    def test_calculateMinimumTimeUnits_bruteForce_simple1(self):
-        ''''''
+    def test_calculateMinimumTimeUnits_dummy(self):
+        '''dummy case for task scheduling'''
+        tasks = []
+        m = 0
+        k = 0
+        result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
+        self.assertEqual(result, 0)
+
+    def test_calculateMinimumTimeUnits_simple1(self):
+        '''simplest case for task scheduling'''
         tasks = [1, 1, 2, 1]
         m = 2
         k = 2
         result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
         self.assertEqual(result, 3)
 
-    def test_calculateMinimumTimeUnits_bruteForce_simple3(self):
-        ''''''
+    def test_calculateMinimumTimeUnits_simple3(self):
+        '''how does algorithm handle task integers that are out of order'''
         tasks = [60, 30, 15, 45, 90]
         m = 3
         k = 2
         result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
         self.assertEqual(result, 2)
 
-    def test_calculateMinimumTimeUnits_bruteForce_simple4(self):
-        ''''''
+    def test_calculateMinimumTimeUnits_moreMachinesThanTasks(self):
+        '''how does algorithm behave when more machines are available than tasks'''
         tasks = [1, 2, 3]
         m = 5
         k = 2
