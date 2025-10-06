@@ -102,5 +102,24 @@ class Test_findSmallestMissingPositive(unittest.TestCase):
         result = sample_algos.findSmallestMissingPositive(orderNumbers)
         self.assertEqual(result, 101)
 
+
+class Test_calculateMinimumTimeUnits(unittest.TestCase):
+
+    def test_calculateMinimumTimeUnits_simple1(self):
+        ''''''
+        tasks = [1, 1, 2, 1]
+        m = 2
+        k = 2
+        result = sample_algos.calculateMinimumTimeUnits(tasks, m, k)
+        self.assertEqual(result, 3)
+
+    def test_calculateMinimumTimeUnits_simple2(self):
+        ''''''
+        tasks = [1, 1, 1, 2, 2, 3]
+        m = 3
+        k = 2
+        result = sample_algos.calculateMinimumTimeUnits(tasks, m, k)
+        self.assertEqual(result, 2)
+
 if __name__ == '__main__':
     unittest.main()
