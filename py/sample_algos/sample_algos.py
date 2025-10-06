@@ -135,6 +135,8 @@ def calculateMinimumTimeUnits_bruteForce(tasks, m, k):
     runtime_counter = 0
     cursor_idx = 0
     cooldown = {} # { machine_id: { task_id: cooldown_time } }
+    for machine_id in range(m):
+        cooldown[machine_id] = {}
 
     while cursor_idx < len(tasks):
         runtime_counter += 1
@@ -142,25 +144,18 @@ def calculateMinimumTimeUnits_bruteForce(tasks, m, k):
         for machine in range(m):
             if cursor_idx >= len(tasks):
                 break
-            if machine not in cooldown:
-                cooldown[machine] = {}
             task = tasks[cursor_idx]
 
             # assign task to machine, if compatible
             if task not in cooldown[machine]:
                 cursor_idx += 1
-                cooldown[machine][task] = k
-            elif cooldown[machine][task] <= 0:
+                cooldown[machine][task] = runtime_counter
+            elif runtime_counter - cooldown[machine][task] >= k:
                 cursor_idx += 1
-                cooldown[machine][task] = k
+                cooldown[machine][task] = runtime_counter
         
         # print(f"runtime_counter: {runtime_counter}")
         # print(f"cursor_idx: {cursor_idx}")
         # print(cooldown)
-
-        # reduce cooldown time for machines before looping
-        for machine in cooldown:
-            for task_cooldown in cooldown[machine]:
-                cooldown[machine][task_cooldown] -= 1
 
     return runtime_counter
