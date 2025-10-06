@@ -143,6 +143,16 @@ class Test_calculateMinimumTimeUnits(unittest.TestCase):
         k = 30
         result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
         self.assertEqual(result, 31)
+    
+    def test_calculateMinimumTimeUnits_confirmMinimumIdleTime(self):
+        '''algorithm shouldn't waste idle time if tasks could be run'''
+        task_list1 = [1]*4
+        task_list2 = [1]*4 + [2]*2 + [3]*2
+        m = 2
+        k = 10
+        result1 = sample_algos.calculateMinimumTimeUnits_bruteForce(task_list1, m, k)
+        result2 = sample_algos.calculateMinimumTimeUnits_bruteForce(task_list2, m, k)
+        self.assertEqual(result1, result2)
 
     def calculateMinimumTimeUnits_longDistinctTaskList(self):
         # with the brute force method, this takes an unacceptable amount of time

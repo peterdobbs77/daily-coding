@@ -145,32 +145,16 @@ def calculateMinimumTimeUnits_bruteForce(tasks, m, k):
             task = tasks[cursor_idx]
 
             # assign task to machine, if compatible
-            if task not in machine:
+            if task not in machine or runtime_counter - machine[task] >= k:
                 cursor_idx += 1
                 machine[task] = runtime_counter
-            elif runtime_counter - machine[task] >= k:
+            else:
+                # otherwise, move task to end of list and continue
                 cursor_idx += 1
-                machine[task] = runtime_counter
+                tasks.append(task)
         
         # print(f"runtime_counter: {runtime_counter}")
         # print(f"cursor_idx: {cursor_idx}")
         # print(cooldown)
-
-    return runtime_counter
-
-from collections import Counter, deque
-import heapq
-
-def calculateMinimumTimeUnits_optimized(tasks, m, k):
-    '''Given an array tasks and m machines,
-        find the minimum time to complete all tasks.
-        Each time unit can process up to m tasks in parallel.
-        A machine cannot process the same task type again for k time units.'''
-    frequency = Counter(tasks)
-    max_heap_q = [(-count, task) for count, task in frequency.items()]
-    heapq.heapify(max_heap_q)
-
-    runtime_counter = 0
-    
 
     return runtime_counter
