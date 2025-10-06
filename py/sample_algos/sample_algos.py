@@ -1,3 +1,26 @@
+def findTaskPairForSlot(taskDurations, slotLength):
+    '''Given an array of positive integers and a target integer,
+        return the indices of two elements that sum to the target
+            or [-1, -1] if no such pair exists.'''
+    if not taskDurations:
+        return [-1, -1]
+
+    # O(n^2) algorithm
+    # for i in range(len(taskDurations)-1):
+    #     for j in range(i+1, len(taskDurations)):
+    #         if taskDurations[i] + taskDurations[j] == slotLength:
+    #             return [i,j]
+
+    # O(n) algorithm
+    remainders = {}
+    for i in range(len(taskDurations)):
+        diff = slotLength - taskDurations[i]
+        if diff in remainders:
+            return [remainders[diff], i]
+        remainders[taskDurations[i]] = i
+    
+    return [-1, -1]
+
 def countSubarraysWithSumAndMaxAtMost(nums, k, M):
     ''''''
     count = 0

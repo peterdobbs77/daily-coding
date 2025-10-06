@@ -1,6 +1,30 @@
 import sample_algos
 import unittest
 
+class Test_findTaskPairForSlot(unittest.TestCase):
+
+    def test_findTaskPairForSlot_simple(self):
+        '''simple test case'''
+        taskDurations = [2, 7, 11, 15]
+        slotLength = 9
+        result = sample_algos.findTaskPairForSlot(taskDurations, slotLength)
+        self.assertEqual(result, [0,1])
+        #
+        taskDurations = [1, 2, 3, 4]
+        slotLength = 8
+        result = sample_algos.findTaskPairForSlot(taskDurations, slotLength)
+        self.assertEqual(result, [-1,-1])
+        #
+        taskDurations = []
+        slotLength = 10
+        result = sample_algos.findTaskPairForSlot(taskDurations, slotLength)
+        self.assertEqual(result, [-1,-1])
+        #
+        taskDurations = [5]
+        slotLength = 5
+        result = sample_algos.findTaskPairForSlot(taskDurations, slotLength)
+        self.assertEqual(result, [-1,-1])
+
 class Test_groupPeakConcurency(unittest.TestCase):
 
     def test_groupPeakConcurency_simple(self):
