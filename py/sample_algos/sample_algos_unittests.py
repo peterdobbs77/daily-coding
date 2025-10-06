@@ -105,21 +105,44 @@ class Test_findSmallestMissingPositive(unittest.TestCase):
 
 class Test_calculateMinimumTimeUnits(unittest.TestCase):
 
-    def test_calculateMinimumTimeUnits_simple1(self):
+    def test_calculateMinimumTimeUnits_bruteForce_simple1(self):
         ''''''
         tasks = [1, 1, 2, 1]
         m = 2
         k = 2
-        result = sample_algos.calculateMinimumTimeUnits(tasks, m, k)
+        result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
         self.assertEqual(result, 3)
 
-    def test_calculateMinimumTimeUnits_simple2(self):
+    def test_calculateMinimumTimeUnits_bruteForce_simple3(self):
         ''''''
-        tasks = [1, 1, 1, 2, 2, 3]
+        tasks = [60, 30, 15, 45, 90]
         m = 3
         k = 2
-        result = sample_algos.calculateMinimumTimeUnits(tasks, m, k)
+        result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
         self.assertEqual(result, 2)
+
+    def test_calculateMinimumTimeUnits_bruteForce_simple4(self):
+        ''''''
+        tasks = [1, 2, 3]
+        m = 5
+        k = 2
+        result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
+        self.assertEqual(result, 1)
+
+    # def calculateMinimumTimeUnits_longDistinctTaskList(self):
+    #     # with the brute force method, this takes an unacceptable amount of time
+    #     tasks = range(10**5)
+    #     m = 2
+    #     k = 2
+    #     result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
+    #     self.assertEqual(result, len(tasks)/m)
+
+    # def test_calculateMinimumTimeUnits_longCooldown(self):
+    #     tasks = [1, 1, 2, 1]
+    #     m = 2
+    #     k = 30
+    #     result = sample_algos.calculateMinimumTimeUnits_bruteForce(tasks, m, k)
+    #     self.assertEqual(result, len(tasks)/m)
 
 if __name__ == '__main__':
     unittest.main()

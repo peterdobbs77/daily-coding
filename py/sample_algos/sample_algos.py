@@ -127,7 +127,7 @@ def findSmallestMissingPositive(orderNumbers):
     return max(orderNumbers) + 1
 
 
-def calculateMinimumTimeUnits(tasks, m, k):
+def calculateMinimumTimeUnits_bruteForce(tasks, m, k):
     '''Given an array tasks and m machines,
         find the minimum time to complete all tasks.
         Each time unit can process up to m tasks in parallel.
@@ -136,29 +136,30 @@ def calculateMinimumTimeUnits(tasks, m, k):
     cursor_idx = 0
     cooldown = {} # { machine_id: { task_id: cooldown_time } }
 
-
     while cursor_idx < len(tasks):
         runtime_counter += 1
 
         for machine in range(m):
+            if cursor_idx >= len(tasks):
+                break
             if machine not in cooldown:
                 cooldown[machine] = {}
             task = tasks[cursor_idx]
-            if task not in cooldown[machine]:
-                cooldown[machine][task] = k
 
             # assign task to machine, if compatible
-            if cooldown[machine][task] == 0:
+            if task not in cooldown[machine]:
                 cursor_idx += 1
-            else:
-                continue
+                cooldown[machine][task] = k
+            elif cooldown[machine][task] <= 0:
+                cursor_idx += 1
+                cooldown[machine][task] = k
         
-        print(f"runtime_counter: {runtime_counter}")
-        print(f"cursor_idx: {cursor_idx}")
-        print(cooldown)
+        # print(f"runtime_counter: {runtime_counter}")
+        # print(f"cursor_idx: {cursor_idx}")
+        # print(cooldown)
 
         # reduce cooldown time for machines before looping
-        for machine in range(m):
+        for machine in cooldown:
             for task_cooldown in cooldown[machine]:
                 cooldown[machine][task_cooldown] -= 1
 
