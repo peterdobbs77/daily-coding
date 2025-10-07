@@ -6,10 +6,9 @@ FHIR = Namespace("http://hl7.org/fhir/")
 EX = Namespace("http://example.org/")
 
 # limit depth on these keys
-DEPTH_LIMIT_ON = ['identifier', # 'subject', 
-                  'encounter', 'serviceProvider', 'individual', 'code',
+DEPTH_LIMIT_ON = ['identifier', 'individual', 'code',
                   'coding', 'valueCoding', 'type', 'text', 'verificationStatus',
-                  'clinicalStatus', 'reference', 'period', 'class', 'name']
+                  'clinicalStatus', 'period', 'class', 'name']
 SKIP_KEYS = ['resourceType', 'id',  # because these two should already have been parsed
              'extension', 'telecom', 'address', 'maritalStatus', 'language', 'display']
 
@@ -44,20 +43,28 @@ class FhirGraph():
         :param data_val: value for JSON object reference as dictionary
         :param referenced_resource_type: must be from the FHIR Resource types
         '''
-        resource_reference = BNode()
-        self._graph.add((root_uri, FHIR[data_key], resource_reference))
-        self._graph.add((resource_reference, RDF.type, FHIR[referenced_resource_type]))
-        self._graph.add((resource_reference, FHIR.type, FHIR[referenced_resource_type]))
+        # OPTION 1: establish direct link
         if 'reference' in data_val:
-            # establish blank node reference
-            reference_node = BNode()
-            self._graph.add((resource_reference, FHIR.reference, reference_node))
-            self._graph.add((reference_node, FHIR.value, Literal(data_val['reference'])))
-            # establish fhir:link
             reference_id = str.split(data_val['reference'], ':')[-1] # assuming reference is of the form "urn:uuid:#######"
-            self._graph.add((resource_reference, FHIR.link, URIRef(EX[referenced_resource_type + '/' + reference_id])))
-        if 'display' in data_val:
-            self._graph.add((resource_reference, FHIR.display, Literal(data_val['display'])))
+            reference_uri = URIRef(EX[referenced_resource_type + '/' + reference_id])
+            self._graph.add((root_uri, FHIR[data_key], reference_uri))
+        # OPTION 2: establish link via blank node
+        # resource_reference = BNode()
+        # self._graph.add((root_uri, FHIR[data_key], resource_reference))
+        # self._graph.add((resource_reference, RDF.type, FHIR[referenced_resource_type]))
+        # self._graph.add((resource_reference, FHIR.type, FHIR[referenced_resource_type]))
+        # if 'reference' in data_val:
+        #     # establish blank node reference
+        #     reference_node = BNode()
+        #     self._graph.add((resource_reference, FHIR.reference, reference_node))
+        #     self._graph.add((reference_node, FHIR.value, Literal(data_val['reference'])))
+        #     # establish fhir:link
+        #     # TODO: handle other reference schema formats (e.g., "Resource/identifier")
+        #     reference_id = str.split(data_val['reference'], ':')[-1] # assuming reference is of the form "urn:uuid:#######"
+        #     reference_uri = URIRef(EX[referenced_resource_type + '/' + reference_id])
+        #     self._graph.add((resource_reference, FHIR.link, reference_uri))
+        # if 'display' in data_val:
+        #     self._graph.add((resource_reference, FHIR.display, Literal(data_val['display'])))
         # print([x for x in data_val.items()]) # TEMP DEBUG LINE
 
     def add_data_to_graph(self, data, root_uri=None):
@@ -65,7 +72,7 @@ class FhirGraph():
         :param data: data from a FHIR resource to be added to the graph
         :param root_uri: root level of resource in RDF, for recursive calls
         '''
-        print(data)
+        # print(data)   # TEMP DEBUG LINE
         if root_uri is None:
             resource_type = data['resourceType']
             root_uri = URIRef(EX[resource_type + '/' + data['id']])
