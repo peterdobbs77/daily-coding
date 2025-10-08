@@ -12,8 +12,14 @@ __Reflection__ benefits greatly from additional input from external sources. In 
 
 ## Tool Use
 
-__Tools__ provide additional functionality to LLMs, creating powerful agents 
+__Tools__ provide additional functionality to LLMs, creating powerful agents that can perform advanced calculations, author custom code, manage emails and tasks, provide customer support, perform market research, interact with MCP servers, and more!
 
 ## Evaluation ("evals")
 
-Error analysis is a critical
+End-to-end Evaluation techniques and examples
+| - | code (objective) | LLM Judge (subjective) |
+| --- | --- | --- |
+| Per-example\n ground truth    | ex: invoice date extraction | ex: count gold-standard talking points |
+| No per-example\n ground truth | ex: copy length within acceptable bounds | ex: standard rubic for visualizatons |
+
+Error analysis is a critical step in the iterative development of Agentic AI. Starting from as early as a prototype, reviewing Traces (end-to-end eval) and Spans (individual component-level eval) will allow a developer to detect problem areas or bottlenecks.
