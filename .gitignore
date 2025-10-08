@@ -9,6 +9,8 @@ agents/knowledge_graph/lessons/*
 agents/agentic_ai_intro/lessons/*
 agents/agentic_ai_intro/M2_assignment/*
 agents/agentic_ai_intro/M3_assignment/*
+agents/agentic_ai_intro/M4_assignment/*
+agents/agentic_ai_intro/M5_assignment/*
 agents/agentic_ai_intro/research_agent/*
 fhir/*
 *.pyc
