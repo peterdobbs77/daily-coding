@@ -22,4 +22,9 @@ End-to-end Evaluation techniques and examples
 | Per-example\n ground truth    | ex: invoice date extraction | ex: count gold-standard talking points |
 | No per-example\n ground truth | ex: copy length within acceptable bounds | ex: standard rubic for visualizatons |
 
-Error analysis is a critical step in the iterative development of Agentic AI. Starting from as early as a prototype, reviewing Traces (end-to-end eval) and Spans (individual component-level eval) will allow a developer to detect problem areas or bottlenecks.
+Error analysis is a critical step in the iterative development of Agentic AI. Starting from as early as a prototype, reviewing Traces (end-to-end eval) and Spans (individual component-level eval) will allow a developer to detect problem areas or bottlenecks. (see OpenTelemetry's [Observability primer](https://opentelemetry.io/docs/concepts/observability-primer/))
+
+Sample "Span" (component-level) evaluation method...using the example of a research agent
+1. Create gold standard ground truth web resources
+2. Write comparison code between ground truth and actual results at each component (e.g., [F-score](https://en.wikipedia.org/wiki/F-score))
+3. Track as you vary hyperparameters (e.g., search engine, number of results, dates)
