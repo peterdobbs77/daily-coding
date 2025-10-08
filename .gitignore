@@ -6,5 +6,9 @@ langchain/pdf_data/*
 langchain/latex_docs/*
 agents/build_and_eval_data_agents/lessons/*
 agents/knowledge_graph/lessons/*
+agents/agentic_ai_intro/lessons/*
+agents/agentic_ai_intro/M2_assignment/*
+agents/agentic_ai_intro/M3_assignment/*
+agents/agentic_ai_intro/research_agent/*
 fhir/*
 *.pyc
