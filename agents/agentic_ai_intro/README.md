@@ -30,3 +30,57 @@ Sample "Span" (component-level) evaluation method...using the example of a resea
 1. Create gold standard ground truth web resources
 2. Write comparison code between ground truth and actual results at each component (e.g., [F-score](https://en.wikipedia.org/wiki/F-score))
 3. Track as you vary hyperparameters (e.g., search engine, number of results, dates)
+
+## Improving non-LLM component performance
+(e.g., web search, text retrieval for RAG, code execution, trained ML model)
+
+* Tune hyper parameters of component (web search: # results, date range; RAG: change similarity metric, chunk size; ML models: detection threshold)
+* Replace component (the power of MODULARITY)
+
+## Improving LLM component performance
+
+* Improve prompts -- more explicit instructions, provide concrete examples ("few-shot" prompting)
+* Try a new/different model -- use evals to select the most appropriate
+* Split up the step -- task decomposition is critical!
+* Fine-tune a model -- tune on internal data to improve performance (complex, so often reserved for improving over the final 5%)
+
+## Develop intuition for model intelligence
+* Play with models often
+    * make personal set of evals
+    * read other people's prompts
+* Use different models in agentic workflows
+    * which models work for which types of tasks?
+    * [aisuite](https://github.com/andrewyng/aisuite) makes it easy to swap out models
+
+## Optimizing: latency and cost
+
+After first optimizing for output quality, you'll want to ship your agentic workflow to production. At that point (maybe a bit before), you must consider latency and cost as metrics for user experience and financial efficiency.
+
+Costing/pricing your workflow
+* LLM steps = pay per token
+* Any API-calling tools = pay per API call
+* Compute steps = server capacity / cost
+
+
+## Autonomous Agentic Workflows: Planning
+
+Though currently experimental, planning workflows are a huge step in autonomous agentic ai. Rather than hard-coding an full agentic workflow, a developer would provide a Planner agent with a set of tools to accomplish a scope of work and then instruct an LLM to execute the resulting Plan from that Planner agent.
+
+Recommendation (pass this as requirements to the system prompt): Format plan as JSON
+
+Example system prompt
+```
+You have access to the following tools:
+{list of tools and descriptions of the tools}
+
+Create a step-by step plan in JSON format.
+
+Each step should have the following items: step number, description, tool name, and args. 
+```
+
+Instead, you could plan with code execution!
+
+
+# Idea:
+
+web-hosted agentic workflow that can access a research database of anonymized (de-identified) patient records to provide intelligence about various diseases
