@@ -61,7 +61,6 @@ Costing/pricing your workflow
 * Any API-calling tools = pay per API call
 * Compute steps = server capacity / cost
 
-
 ## Autonomous Agentic Workflows: Planning
 
 Though currently experimental, planning workflows are a huge step in autonomous agentic ai. Rather than hard-coding an full agentic workflow, a developer would provide a Planner agent with a set of tools to accomplish a scope of work and then instruct an LLM to execute the resulting Plan from that Planner agent.
@@ -78,9 +77,34 @@ Create a step-by step plan in JSON format.
 Each step should have the following items: step number, description, tool name, and args. 
 ```
 
-Instead, you could plan with code execution!
+Planning with tools is pretty neat, but it is overly restrictive (brittle, inefficient, continuously dealing with edge cases not covered by tools). Instead, you could **plan with code execution**!
 
+## Multi-agent Workflows
+
+Each agent can focus on one capability at a time. Teams/developers can focus on improving individual agents, which can help with task allocation at a company.
+
+Planning with multiple agents does not _have_ to be completed linearly. It can be advantageous to have an orchestrator (or manager) agent that decides how the agents coordinate to accomplish a given assignment.
+
+## Communication patterns for multi-agent systems
+
+### Linear
+
+results are passed directly from one agent to the next (and possibly even further down the pipeline)
+
+### Hierarchical / Orchestrated
+
+results passed up the hierarchy before moving along to the next step
+
+### Deeper Hierarchy
+
+agents have sub-agents for refinement/reflection or other agentic tooling
+
+### All-to-all (peer-to-peer)
+
+all agents have all intermediate and final outputs from other agents
 
 # Idea:
+
+optimize an agentic planning workflow with cached responses to FAQ based on similarity threshold.
 
 web-hosted agentic workflow that can access a research database of anonymized (de-identified) patient records to provide intelligence about various diseases
