@@ -202,13 +202,13 @@ def get_schema(db_path: str) -> str:
     """
     Return the schemas for all tables.
     """
-    schema = ""
+    schema = f"database at: {db_path}"
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
     for table_name in ["employees", "products", "transactions"]:
         cur.execute(f"PRAGMA table_info({table_name})")
         rows = cur.fetchall()
-        schema += f"\n\ntable name: {table_name}" + "\n".join([f"{r[1]} ({r[2]})" for r in rows])
+        schema += f"\n\ntable name: {table_name}\n" + "\n".join([f"{r[1]} ({r[2]})" for r in rows])
     conn.close()
     return schema
 
