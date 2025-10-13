@@ -8,9 +8,52 @@ COMPANY_START_DATE = datetime.datetime(1996, 5, 8)
 
 IS_LIMITED_EDITION_LIKELIHOOD = 0.05 # 5% of products should be limited edition
 
+
+def create_employees_table(
+        cur: sqlite3.Cursor,
+        n_employees: int = 5
+) -> list:
+    """
+    Initializes table 'employees' with randomly generated staff
+    Returns employee roster
+    """
+    cur.execute("DROP TABLE IF EXISTS employees")
+    cur.execute("""
+    CREATE TABLE employees (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        department TEXT NOT NULL,
+        salary INTEGER NOT NULL,
+        start_date DATE DEFAULT CURRENT_DATE
+    )
+    """)
+
+    names = ["Abby", "Bruno", "Charles", "Deepti", "Eileen", "Frederic", "Goodall", "Henrik", "Ishi", "Watanabe", "Zephyr"]
+    departments = ["sales", "stock", "fitting", "corporate"]
+
+    max_date = datetime.datetime.today()
+    employee_roster = []
+    for empl in range(n_employees):
+        # populate table with employees
+        name = f"{RNG.choice(names)} {RNG.choice(names)}"
+        department = RNG.choice(departments)
+        salary = RNG.randint(45000, 60000)
+        if department == "corporate":
+            salary = RNG.randint(90000, 150000)
+        start_date = COMPANY_START_DATE + (max_date - COMPANY_START_DATE) * RNG.random()
+        employee_roster.append((empl+1, name, department, salary, start_date))
+        cur.execute("""
+            INSERT INTO employees (
+                name, department, salary, start_date
+            ) VALUES (?, ?, ?, ?)
+        """, (name, department, salary, start_date))
+
+    return employee_roster
+
+
 def create_products_table(
         cur: sqlite3.Cursor,
-        n_products: int = 10000
+        n_products: int = 10
 ) -> list:
     """
     Initializes table 'products' with randomly generated stuff
@@ -55,52 +98,10 @@ def create_products_table(
     return product_catalog
 
 
-def create_employees_table(
-        cur: sqlite3.Cursor,
-        n_employees: int = 100
-) -> list:
-    """
-    Initializes table 'employees' with randomly generated staff
-    Returns employee roster
-    """
-    cur.execute("DROP TABLE IF EXISTS employees")
-    cur.execute("""
-    CREATE TABLE employees (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        department TEXT NOT NULL,
-        salary INTEGER NOT NULL,
-        start_date DATE DEFAULT CURRENT_DATE
-    )
-    """)
-
-    names = ["Abby", "Bruno", "Charles", "Deepti", "Eileen", "Frederic", "Goodall", "Henrik", "Ishi", "Watanabe", "Zephyr"]
-    departments = ["sales", "stock", "fitting", "corporate"]
-
-    max_date = datetime.datetime.today()
-    employee_roster = []
-    for empl in range(n_employees):
-        # populate table with employees
-        name = f"{RNG.choice(names)} {RNG.choice(names)}"
-        department = RNG.choice(departments)
-        salary = RNG.randint(45000, 60000)
-        if department == "corporate":
-            salary = RNG.randint(90000, 150000)
-        start_date = COMPANY_START_DATE + (max_date - COMPANY_START_DATE) * RNG.random()
-        employee_roster.append((empl+1, name, department, salary, start_date))
-        cur.execute("""
-            INSERT INTO employees (
-                name, department, salary, start_date
-            ) VALUES (?, ?, ?, ?)
-        """, (name, department, salary, start_date))
-
-    return employee_roster
-
-
 def create_db(
     db_name: str = "products.db",
-    n_employees: int = 100,
-    n_products: int = 10000,
+    n_employees: int = 5,
+    n_products: int = 10,
     n_txns_per_product: int = 50,
 ) -> None:
     """
@@ -116,6 +117,7 @@ def create_db(
     cur.execute("DROP TABLE IF EXISTS transactions")
 
     # Event-sourced transactions table
+    # TODO: incorporate different currencies and exchange rate
     cur.execute("""
     CREATE TABLE transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -145,15 +147,21 @@ def create_db(
         cur.execute("""
             INSERT INTO transactions (
                 product_id, employee_id,
-                action, qty_delta, unit_price, notes
-            ) VALUES (?, ?, 'insert', ?, ?, ?)
+                action, qty_delta, unit_price, notes, ts
+            ) VALUES (?, ?, 'insert', ?, ?, ?, ?)
         """, (pid, release_manager_id, initial_stock, base_price,
-              f"Initial transaction:insert with stock={initial_stock}, price={base_price}"))
+              f"Initial transaction:insert with stock={initial_stock}, price={base_price}",
+              release_date))
 
         current_price = base_price
 
+        current_date = release_date
         # Follow-up events
         for _ in range(n_txns_per_product - 1):
+            # EITHER:
+            current_date += (datetime.datetime.today() - current_date) * RNG.random() # leads to exponential growth in revenue
+            # OR:
+            current_date += (datetime.datetime.today() - current_date) / (n_txns_per_product+1) # leads to linear revenue growth (depending on product launches)
             event_type = RNG.choices(
                 ["restock", "sale", "price_update"],
                 weights=[0.25, 0.6, 0.15],
@@ -166,20 +174,22 @@ def create_db(
                 cur.execute("""
                     INSERT INTO transactions (
                         product_id, employee_id,
-                        action, qty_delta, unit_price, notes
-                    ) VALUES (?, ?, 'restock', ?, NULL, ?)
+                        action, qty_delta, unit_price, notes, ts
+                    ) VALUES (?, ?, 'restock', ?, NULL, ?, ?)
                 """, (pid, random_empl_id, qty,
-                      f"Restock +{qty} units"))
+                      f"Restock +{qty} units",
+                      current_date))
 
             elif event_type == "sale":
                 qty = -RNG.randint(1, 10)  # negative
                 cur.execute("""
                     INSERT INTO transactions (
                         product_id, employee_id,
-                        action, qty_delta, unit_price, notes
-                    ) VALUES (?, ?, 'sale', ?, ?, ?)
+                        action, qty_delta, unit_price, notes, ts
+                    ) VALUES (?, ?, 'sale', ?, ?, ?, ?)
                 """, (pid, random_empl_id, qty, current_price,
-                      f"Sale {-qty} units at {current_price}"))
+                      f"Sale {-qty} units at {current_price}",
+                      current_date))
 
             else:  # price_update
                 delta = round(RNG.uniform(-5.0, 5.0), 2)
@@ -187,10 +197,11 @@ def create_db(
                 cur.execute("""
                     INSERT INTO transactions (
                         product_id, employee_id,
-                        action, qty_delta, unit_price, notes
-                    ) VALUES (?, ?, 'price_update', 0, ?, ?)
+                        action, qty_delta, unit_price, notes, ts
+                    ) VALUES (?, ?, 'price_update', 0, ?, ?, ?)
                 """, (pid, random_empl_id, current_price,
-                      f"Price update to {current_price}"))
+                      f"Price update to {current_price}",
+                      current_date))
 
     conn.commit()
     conn.close()
