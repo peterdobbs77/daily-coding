@@ -133,10 +133,21 @@ def findSmallestMissingPositive(orderNumbers):
         not present in the array in O(n) time and O(1) extra space.'''
     if len(orderNumbers) == 0:
         return 1
+    
+    # # OPTION1: using sets (O(1) retrieval, so O(n) time, but not O(1) space)
+    # orderNumbers_set = set(orderNumbers)
+    # candidate = 1
+    # while candidate in orderNumbers_set:
+    #     candidate += 1
+    # return candidate
+
+    # OPTION 2: order existing list so that X[i] = i+1 (O(n) time, O(1) space)
 
     # reorder
     for i in range(len(orderNumbers)):
-        while 1 <= orderNumbers[i] and orderNumbers[i] <= len(orderNumbers) \
+        # 1 <= X[i] <= len(X) and X[X[i]-1] != X[i]
+        while 1 <= orderNumbers[i] \
+                and orderNumbers[i] <= len(orderNumbers) \
                 and orderNumbers[orderNumbers[i]-1] != orderNumbers[i]:
             cursor_idx = orderNumbers[i] - 1
             # swap
@@ -147,7 +158,7 @@ def findSmallestMissingPositive(orderNumbers):
         if orderNumbers[i] != i+1:
             return i+1
 
-    return max(orderNumbers) + 1
+    return len(orderNumbers) + 1
 
 
 def calculateMinimumTimeUnits_bruteForce(tasks, m, k):

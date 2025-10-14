@@ -1,5 +1,6 @@
 import sample_algos
 import unittest
+import random
 
 class Test_findTaskPairForSlot(unittest.TestCase):
 
@@ -103,26 +104,64 @@ class Test_groupPeakConcurency(unittest.TestCase):
 class Test_findSmallestMissingPositive(unittest.TestCase):
 
     def test_findSmallestMissingPositive_emptyList(self):
-        ''''''
+        '''How does algorithm handle an empty list?'''
         orderNumbers = []
         result = sample_algos.findSmallestMissingPositive(orderNumbers)
         self.assertEqual(result, 1)
 
+    def test_findSmallestMissingPositive_simplest(self):
+        '''How does algorithm handle an ordered list of positive integers?'''
+        orderNumbers = [1, 2, 3, 4, 5]
+        result = sample_algos.findSmallestMissingPositive(orderNumbers)
+        self.assertEqual(result, 6)
+
+    def test_findSmallestMissingPositive_simple_with0(self):
+        '''How does algorithm handle an ordered list of positive integers with 0?'''
+        orderNumbers = [0, 1, 2, 3, 4, 5]
+        result = sample_algos.findSmallestMissingPositive(orderNumbers)
+        self.assertEqual(result, 6)
+
     def test_findSmallestMissingPositive_simple(self):
-        ''''''
+        '''How does algorithm handle a small set of signed integers?'''
         orderNumbers = [3, 4, -1, 1]
         result = sample_algos.findSmallestMissingPositive(orderNumbers)
         self.assertEqual(result, 2)
 
+    def test_findSmallestMissingPositive_allNegatives(self):
+        '''How does algorithm handle all Negatives?'''
+        orderNumbers = [-1]*10
+        result = sample_algos.findSmallestMissingPositive(orderNumbers)
+        self.assertEqual(result, 1)
 
-    def test_findSmallestMissingPositive_longrange(self):
-        ''''''
-        orderNumbers = []
+    def test_findSmallestMissingPositive_allZeros(self):
+        '''How does algorithm handle all Zeros?'''
+        orderNumbers = [0]*10
+        result = sample_algos.findSmallestMissingPositive(orderNumbers)
+        self.assertEqual(result, 1)
+
+    def test_findSmallestMissingPositive_allLargeNumbers(self):
+        '''How does algorithm handle all Zeros?'''
+        orderNumbers = [7, 8, 9, 11, 12]
+        result = sample_algos.findSmallestMissingPositive(orderNumbers)
+        self.assertEqual(result, 1)
+
+    def test_findSmallestMissingPositive_manyNegatives(self):
+        '''How does algorithm handle lots of negatives and duplicates?'''
+        orderNumbers = [-1]*10 + [7, 2, 3, 1, 4, 6, 7] + [9]*10 + [0]*10
+        rng = random.Random(58)
+        rng.shuffle(orderNumbers)
+        result = sample_algos.findSmallestMissingPositive(orderNumbers)
+        self.assertEqual(result, 5)
+
+    def findSmallestMissingPositive_longrange(self):
+        '''How does algorithm handle a large list of signed integers?'''
+        orderNumbers = [0]*1000
         orderNumbers += [x for x in range(-1000, 1001, 2)]
         orderNumbers += [x for x in range(-1000, 1001, 2)]
         orderNumbers += [x for x in range(1001) if x != 101]
         orderNumbers += [x for x in range(-1000, 1001, 2)]
-        orderNumbers.reverse()
+        rng = random.Random(58)
+        rng.shuffle(orderNumbers)
         result = sample_algos.findSmallestMissingPositive(orderNumbers)
         self.assertEqual(result, 101)
 
