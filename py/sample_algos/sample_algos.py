@@ -131,7 +131,8 @@ def computeGroupPeakConcurrency(events: list):
 def findSmallestMissingPositive(orderNumbers):
     '''Given an unsorted array of integers, find the smallest positive integer
         not present in the array in O(n) time and O(1) extra space.'''
-    if len(orderNumbers) == 0:
+    if len(orderNumbers) == 0 or len(orderNumbers) > 10**5 \
+            or max(orderNumbers) > 10**6 or min(orderNumbers) < -(10**6):
         return 1
     
     # # OPTION1: using sets (O(1) retrieval, so O(n) time, but not O(1) space)
