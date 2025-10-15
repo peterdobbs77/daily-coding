@@ -1,5 +1,10 @@
+# Author: Peter N. Dobbs
+# Influenced by https://github.com/BD2KOnFHIR/fhirtordf, but improved for my purposes
+
 from rdflib import Graph, URIRef, BNode, OWL, RDF, Literal, Namespace
-import json
+import networkx as nx
+import matplotlib.pyplot as plt
+import warnings
 
 # NAMESPACES for graph
 FHIR = Namespace("http://hl7.org/fhir/")
@@ -36,7 +41,7 @@ class FhirGraph():
         elif 'resourceType' in self._source:
             self._root_resource_type = self._source['resourceType']
 
-    def add_reference_to_resource(self, root_uri: URIRef, data_key: str, data_val: dict, referenced_resource_type: str):
+    def add_direct_reference_to_resource(self, root_uri: URIRef, data_key: str, data_val: dict, referenced_resource_type: str):
         '''
         :param root_uri: root level of resource in RDF
         :param data_key: key for JSON object reference, should be 'subject'
@@ -48,24 +53,33 @@ class FhirGraph():
             reference_id = str.split(data_val['reference'], ':')[-1] # assuming reference is of the form "urn:uuid:#######"
             reference_uri = URIRef(EX[referenced_resource_type + '/' + reference_id])
             self._graph.add((root_uri, FHIR[data_key], reference_uri))
+
+    def _add_blank_reference_node_to_resource(self, root_uri: URIRef, data_key: str, data_val: dict, referenced_resource_type: str):
+        '''Establishes linkage via a blank node with properties of the reference
+        :param root_uri: root level of resource in RDF
+        :param data_key: key for JSON object reference, should be 'subject'
+        :param data_val: value for JSON object reference as dictionary
+        :param referenced_resource_type: must be from the FHIR Resource types
+        '''
+        warnings.warn("Warning: This method is unstable. Use `add_direct_reference_to_resource` instead", DeprecationWarning)
         # OPTION 2: establish link via blank node
-        # resource_reference = BNode()
-        # self._graph.add((root_uri, FHIR[data_key], resource_reference))
-        # self._graph.add((resource_reference, RDF.type, FHIR[referenced_resource_type]))
-        # self._graph.add((resource_reference, FHIR.type, FHIR[referenced_resource_type]))
-        # if 'reference' in data_val:
-        #     # establish blank node reference
-        #     reference_node = BNode()
-        #     self._graph.add((resource_reference, FHIR.reference, reference_node))
-        #     self._graph.add((reference_node, FHIR.value, Literal(data_val['reference'])))
-        #     # establish fhir:link
-        #     # TODO: handle other reference schema formats (e.g., "Resource/identifier")
-        #     reference_id = str.split(data_val['reference'], ':')[-1] # assuming reference is of the form "urn:uuid:#######"
-        #     reference_uri = URIRef(EX[referenced_resource_type + '/' + reference_id])
-        #     self._graph.add((resource_reference, FHIR.link, reference_uri))
-        # if 'display' in data_val:
-        #     self._graph.add((resource_reference, FHIR.display, Literal(data_val['display'])))
-        # print([x for x in data_val.items()]) # TEMP DEBUG LINE
+        resource_reference = BNode()
+        self._graph.add((root_uri, FHIR[data_key], resource_reference))
+        self._graph.add((resource_reference, RDF.type, FHIR[referenced_resource_type]))
+        self._graph.add((resource_reference, FHIR.type, FHIR[referenced_resource_type]))
+        if 'reference' in data_val:
+            # establish blank node reference
+            reference_node = BNode()
+            self._graph.add((resource_reference, FHIR.reference, reference_node))
+            self._graph.add((reference_node, FHIR.value, Literal(data_val['reference'])))
+            # establish fhir:link
+            # TODO: handle other reference schema formats (e.g., "Resource/identifier")
+            reference_id = str.split(data_val['reference'], ':')[-1] # assuming reference is of the form "urn:uuid:#######"
+            reference_uri = URIRef(EX[referenced_resource_type + '/' + reference_id])
+            self._graph.add((resource_reference, FHIR.link, reference_uri))
+        if 'display' in data_val:
+            self._graph.add((resource_reference, FHIR.display, Literal(data_val['display'])))
+        print([x for x in data_val.items()]) # TEMP DEBUG LINE
 
     def add_data_to_graph(self, data, root_uri=None):
         '''Add data from FHIR resource to graph
@@ -89,7 +103,7 @@ class FhirGraph():
 
             if isinstance(value, dict):  # Handle nested objects
                 if key in MAP_KEY_TO_RESOURCE_TYPE.keys():
-                    self.add_reference_to_resource(root_uri, key, value, MAP_KEY_TO_RESOURCE_TYPE[key])
+                    self.add_direct_reference_to_resource(root_uri, key, value, MAP_KEY_TO_RESOURCE_TYPE[key])
                 else:
                     if key not in DEPTH_LIMIT_ON:
                         self.add_data_to_graph(value, root_uri)  # Recursive call for nested objects
@@ -116,3 +130,36 @@ class FhirGraph():
                 break
         return self._graph
         # self.add_data_to_graph(data=self._source)
+    
+    def pretty_view_rdf_graph(self, title="Simplified View of RDF Representation of FHIR Resources"):
+        '''Visualize simplified view of the RDF graph,
+            just showing connections between FHIR Resources
+            Does not include all the properties connections
+        :param g: `rdflib.Graph`'''
+        # Create NetworkX graph
+        nx_graph = nx.DiGraph()
+
+        for subj, pred, obj in self._graph:
+            if not isinstance(obj, URIRef):
+                continue
+            # Convert nodes to readable strings
+            subj_str = str(subj).split('/')[-2] + '\n' + str(subj).split('/')[-1]
+            pred_str = str(pred).split('/')[-1]
+            obj_str = str(obj).split('/')[-2] + '\n' + str(obj).split('/')[-1]
+
+            # Add edge with predicate label
+            nx_graph.add_edge(subj_str, obj_str, label=pred_str)
+        
+        # Draw graph
+        # pos = nx.arf_layout(nx_graph, seed=42) # ARF is better than spring
+        pos = nx.shell_layout(nx_graph, 
+                                nlist=[[x for x in nx_graph.nodes() if 'fhir' in x],
+                                        [x for x in nx_graph.nodes() if 'fhir' not in x]])
+        edge_labels = nx.get_edge_attributes(nx_graph, 'label')
+
+        plt.figure(figsize=(12, 8))
+        nx.draw(nx_graph, pos, with_labels=True, node_color='lightblue', edge_color='gray', node_size=2000, font_size=10)
+        nx.draw_networkx_edge_labels(nx_graph, pos, edge_labels=edge_labels, font_color='red')
+        plt.title(title)
+        plt.tight_layout()
+        plt.show()
