@@ -24,6 +24,39 @@ MAP_KEY_TO_RESOURCE_TYPE = { # assumes that these keys are a reference to only o
     'encounter': 'Encounter'
 }
 
+def pretty_view_rdf_graph(self, title="Simplified View of RDF Representation of FHIR Resources"):
+    '''Visualize simplified view of the RDF graph,
+        just showing connections between FHIR Resources
+        Does not include all the properties connections
+    :param g: `rdflib.Graph`'''
+    # Create NetworkX graph
+    nx_graph = nx.DiGraph()
+
+    for subj, pred, obj in self._graph:
+        if not isinstance(obj, URIRef):
+            continue
+        # Convert nodes to readable strings
+        subj_str = str(subj).split('/')[-2] + '\n' + str(subj).split('/')[-1]
+        pred_str = str(pred).split('/')[-1]
+        obj_str = str(obj).split('/')[-2] + '\n' + str(obj).split('/')[-1]
+
+        # Add edge with predicate label
+        nx_graph.add_edge(subj_str, obj_str, label=pred_str)
+    
+    # Draw graph
+    # pos = nx.arf_layout(nx_graph, seed=42) # ARF is better than spring
+    pos = nx.shell_layout(nx_graph, 
+                            nlist=[[x for x in nx_graph.nodes() if 'fhir' in x],
+                                    [x for x in nx_graph.nodes() if 'fhir' not in x]])
+    edge_labels = nx.get_edge_attributes(nx_graph, 'label')
+
+    plt.figure(figsize=(12, 8))
+    nx.draw(nx_graph, pos, with_labels=True, node_color='lightblue', edge_color='gray', node_size=2000, font_size=10)
+    nx.draw_networkx_edge_labels(nx_graph, pos, edge_labels=edge_labels, font_color='red')
+    plt.title(title)
+    plt.tight_layout()
+    plt.show()
+
 class FhirGraph():
     '''A FHIR RDF representation of a FHIR JSON resource'''
 
@@ -131,35 +164,3 @@ class FhirGraph():
         return self._graph
         # self.add_data_to_graph(data=self._source)
     
-    def pretty_view_rdf_graph(self, title="Simplified View of RDF Representation of FHIR Resources"):
-        '''Visualize simplified view of the RDF graph,
-            just showing connections between FHIR Resources
-            Does not include all the properties connections
-        :param g: `rdflib.Graph`'''
-        # Create NetworkX graph
-        nx_graph = nx.DiGraph()
-
-        for subj, pred, obj in self._graph:
-            if not isinstance(obj, URIRef):
-                continue
-            # Convert nodes to readable strings
-            subj_str = str(subj).split('/')[-2] + '\n' + str(subj).split('/')[-1]
-            pred_str = str(pred).split('/')[-1]
-            obj_str = str(obj).split('/')[-2] + '\n' + str(obj).split('/')[-1]
-
-            # Add edge with predicate label
-            nx_graph.add_edge(subj_str, obj_str, label=pred_str)
-        
-        # Draw graph
-        # pos = nx.arf_layout(nx_graph, seed=42) # ARF is better than spring
-        pos = nx.shell_layout(nx_graph, 
-                                nlist=[[x for x in nx_graph.nodes() if 'fhir' in x],
-                                        [x for x in nx_graph.nodes() if 'fhir' not in x]])
-        edge_labels = nx.get_edge_attributes(nx_graph, 'label')
-
-        plt.figure(figsize=(12, 8))
-        nx.draw(nx_graph, pos, with_labels=True, node_color='lightblue', edge_color='gray', node_size=2000, font_size=10)
-        nx.draw_networkx_edge_labels(nx_graph, pos, edge_labels=edge_labels, font_color='red')
-        plt.title(title)
-        plt.tight_layout()
-        plt.show()
