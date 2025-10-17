@@ -98,7 +98,7 @@ def create_products_table(
     return product_catalog
 
 
-def create_db(
+def create_products_db(
     db_name: str = "products.db",
     n_employees: int = 5,
     n_products: int = 10,
