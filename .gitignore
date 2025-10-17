@@ -13,5 +13,8 @@ agents/agentic_ai_intro/M4_assignment/*
 agents/agentic_ai_intro/M5_assignment/*
 agents/agentic_ai_intro/research_agent/*
 fhir/*
-sql/*.db
 *.pyc
+*.db
+*.ttl
+*.sqlite3
+*.bin
