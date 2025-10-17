@@ -1,6 +1,5 @@
 import sqlite3
 import random
-import datetime
 import pandas as pd
 
 RNG = random.Random(58)
@@ -24,12 +23,22 @@ def create_mountain_huts_table(
     );
     """)
 
-    names = ["Abby", "Bruno", "Charles", "Deepti", "Eileen", "Frederic", "Goodall", "Henrik", "Ishi", "Watanabe", "Zephyr"]
+    names = [
+        "Abby", "Base", "Chalet", "Deepti", "Eileen", "Frederic", "Goodall", "Henrik", 
+        "Ishi", "Jackolantern", "Koala", "Llama", "Marino J", "Nuance", "Oval", "Pecunia", 
+        "Quartile", "Responder", "Septuagint", "Tibult", "Union", "Vail", "Watanabe", 
+        "Xerxes", "YNot", "Zephyr"
+    ]
+    suffixes = [
+        "2", "II", "AllBlacks"
+    ]
 
     mountain_huts = []
     for hut in range(n_huts):
         # populate table with employees
-        name = names[hut]
+        name = f"{RNG.choice(names)} {RNG.choice(names)}"
+        if RNG.random() > 0.8:
+            name += f" {RNG.choice(suffixes)}"
         altitude = RNG.randint(3000, 15000)
         mountain_huts.append((hut+1, name, altitude))
         cur.execute("""
