@@ -1,7 +1,10 @@
 import sqlite3
 import random
 import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
 
+DB_PATH = "ski_hill.db"
 RNG = random.Random(58)
 
 def create_mountain_huts_table(
@@ -92,7 +95,7 @@ def create_trails_table(
 
 
 def create_ski_hill_db(
-    db_name: str = "ski_hill.db",
+    db_name: str = DB_PATH,
     n_huts: int = 5
 ) -> None:
     """
@@ -113,7 +116,7 @@ def create_ski_hill_db(
     print(f"SQLite database '{db_name}' created with a 'mountain_huts' table and 'trails' table.")
 
 
-def get_schema(db_path: str) -> str:
+def get_schema(db_path: str = DB_PATH) -> str:
     """
     Return the schemas for all tables.
     """
@@ -128,7 +131,7 @@ def get_schema(db_path: str) -> str:
     return schema
 
 
-def execute_sql(query: str, db_path: str) -> pd.DataFrame:
+def execute_sql(query: str, db_path: str = DB_PATH) -> pd.DataFrame:
     """
     Execute any SELECT over the tables.
     """
@@ -141,3 +144,42 @@ def execute_sql(query: str, db_path: str) -> pd.DataFrame:
         return pd.DataFrame({"error": [str(e)]})
     finally:
         conn.close()
+
+def graph_ski_routes(db_path: str = DB_PATH) -> nx.DiGraph:
+    """
+    Visualize the Routes defined in the specified database path
+    :param db_path: path to database containing mountain_huts and trails tables
+    """
+    mountain_huts = execute_sql("select * from mountain_huts", db_path)
+    trails = execute_sql("select * from trails", db_path)
+    
+    graph = nx.DiGraph()
+
+    for idx, hut in mountain_huts.iterrows():
+        graph.add_node(hut["name"])
+
+    mountain_huts.set_index(keys="id", inplace=True)
+    for hut1_idx, hut2_idx in trails.itertuples(index=False):
+        hut1_series = mountain_huts.loc[hut1_idx]
+        hut2_series = mountain_huts.loc[hut2_idx]
+        if hut1_series["altitude"] > hut2_series["altitude"]:
+            graph.add_edge(u_of_edge=hut1_series["name"],
+                           v_of_edge=hut2_series["name"],
+                           length=hut1_series["altitude"]-hut2_series["altitude"])
+        else:
+            graph.add_edge(u_of_edge=hut2_series["name"],
+                           v_of_edge=hut1_series["name"],
+                           length=hut2_series["altitude"]-hut1_series["altitude"])
+    
+    # TODO: adjust node x-positions based on connections
+    pos = nx.planar_layout(graph)
+
+    plt.figure(figsize=(12,10))
+    nx.draw(graph,
+            pos=pos,
+            with_labels=True,
+            font_size=12)
+    plt.title("Ski Routes")
+    plt.show()
+
+    return graph
