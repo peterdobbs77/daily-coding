@@ -9,6 +9,11 @@ While researching these RMFs, I think back to the [Deon Ethical Checklist for Da
 Key acronyms:
 * Test, Evaluate, Verify, and Validate (TEVV)
 
+## Groups focused on the Risks from Artificial Intelligence
+
+* [MIT AI Risk Repository](https://airisk.mit.edu/)
+* [responsible.ai](https://www.responsible.ai/)
+
 ## [NIST AI RMF](https://doi.org/10.6028/NIST.AI.100-1)
 
 All AI actors (e.g., designers, developers, integrators, deployers, etc) share responsibilities for the trustworthiness of an AI system.
@@ -27,4 +32,3 @@ AI RMF Core
 2. MAP
 3. MEASURE
 4. MANAGE
-
