@@ -171,8 +171,8 @@ def graph_ski_routes(db_path: str = DB_PATH) -> nx.DiGraph:
                            v_of_edge=hut1_series["name"],
                            length=hut2_series["altitude"]-hut1_series["altitude"])
     
-    # TODO: adjust node x-positions based on connections
-    pos = nx.planar_layout(graph)
+    # I like spectral layout because it kinda gives topographical map vibes
+    pos = nx.spectral_layout(graph)
 
     plt.figure(figsize=(12,10))
     nx.draw(graph,
