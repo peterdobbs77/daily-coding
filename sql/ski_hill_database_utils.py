@@ -6,7 +6,7 @@ RNG = random.Random(58)
 
 def create_mountain_huts_table(
         cur: sqlite3.Cursor,
-        n_huts: int = 10
+        n_huts: int = 5
 ) -> list:
     """
     Initializes table 'mountain_huts' with randomly generated staff
@@ -27,17 +27,16 @@ def create_mountain_huts_table(
         "Abby", "Base", "Chalet", "Deepti", "Eileen", "Frederic", "Goodall", "Henrik", 
         "Ishi", "Jackolantern", "Koala", "Llama", "Marino J", "Nuance", "Oval", "Pecunia", 
         "Quartile", "Responder", "Septuagint", "Tibult", "Union", "Vail", "Watanabe", 
-        "Xerxes", "YNot", "Zephyr"
+        "Xerxes", "YKnot", "Zephyr"
     ]
     suffixes = [
-        "2", "II", "AllBlacks"
+        "2", "II", "Not", "?"
     ]
 
     mountain_huts = []
     for hut in range(n_huts):
-        # populate table with employees
         name = f"{RNG.choice(names)} {RNG.choice(names)}"
-        if RNG.random() > 0.8:
+        if RNG.random() > 0.9:
             name += f" {RNG.choice(suffixes)}"
         altitude = RNG.randint(3000, 15000)
         mountain_huts.append((hut+1, name, altitude))
@@ -52,7 +51,7 @@ def create_mountain_huts_table(
 
 def create_trails_table(
         cur: sqlite3.Cursor,
-        n_huts: list
+        n_huts: int = 5
 ) -> list:
     """
     Initializes table 'trails' with randomly generated links between huts
@@ -69,6 +68,9 @@ def create_trails_table(
     
     trails = []
     for hut in range(1, n_huts+1):
+        # if RNG.random() > 0.8:
+        #     # increase the chance of orphaned huts
+        #     continue
         if RNG.random() > 0.6:
             hut1 = hut
             hut2 = RNG.randint(1, n_huts)
@@ -76,6 +78,7 @@ def create_trails_table(
             hut1 = RNG.randint(1, n_huts)
             hut2 = hut
         trails.append((hut1, hut2))
+        # surrounded in try-catch to avoid errors from duplicates
         try:
             cur.execute("""
                 INSERT INTO trails (
@@ -100,6 +103,7 @@ def create_ski_hill_db(
     cur = conn.cursor()
 
     # Reset
+    # TODO: consider adding base camp or lodge
     create_mountain_huts_table(cur, n_huts)
     create_trails_table(cur, n_huts)
 
@@ -108,40 +112,6 @@ def create_ski_hill_db(
 
     print(f"SQLite database '{db_name}' created with a 'mountain_huts' table and 'trails' table.")
 
-def propose_ski_routes(db_name: str = "ski_hill.db"):
-    """
-    """
-    conn = sqlite3.connect(db_name)
-    cur = conn.cursor()
-
-    response = cur.execute(
-        """
-        WITH bd_trails AS (
-            SELECT hut1, hut2 FROM trails
-            UNION
-            SELECT hut2 AS hut1, hut1 AS hut2 FROM trails
-        )
-        SELECT 
-            start.name AS startpt,
-            mid.name AS middlept,
-            end.name AS endpt
-        FROM bd_trails AS first
-        JOIN mountain_huts AS start ON start.id = first.hut1
-        JOIN mountain_huts AS mid ON mid.id = first.hut2
-        JOIN LATERAL (
-            SELECT hut2
-            FROM bd_trails
-            WHERE hut1 = first.hut2
-        ) AS second ON true
-        JOIN mountain_huts AS end ON end.id = second.hut2
-        WHERE start.altitude > mid.altitude AND mid.altitude > end.altitude;
-        """
-    )
-    
-    conn.commit()
-    conn.close()
-
-    return response
 
 def get_schema(db_path: str) -> str:
     """
