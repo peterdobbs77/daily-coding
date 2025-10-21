@@ -10,16 +10,17 @@ import warnings
 FHIR = Namespace("http://hl7.org/fhir/")
 EX = Namespace("http://example.org/")
 
-# limit depth on these keys
-DEPTH_LIMIT_ON = ['identifier', 'individual', 'code',
-                  'coding', 'valueCoding', 'type', 'text', 'verificationStatus',
-                  'clinicalStatus', 'period', 'class', 'name']
 SKIP_KEYS = ['resourceType', 'id',  # because these two should already have been parsed
-             'extension', 'telecom', 'address', 'maritalStatus', 'language', 'display']
+             # TODO: setup handling for the rest of these properties
+             'extension', 'communication', 'telecom', 'address', 'maritalStatus', 'language',
+             'participant', 'individual', 'verificationStatus',
+             'clinicalStatus', 'period', 'class' 
+            ]
 
 # map json key value to resource type
 MAP_KEY_TO_RESOURCE_TYPE = { # assumes that these keys are a reference to only one resource type (not necessarily true)
     'subject': 'Patient',
+    'patient': 'Patient',
     'serviceProvider': 'Organization',
     'encounter': 'Encounter'
 }
@@ -66,6 +67,7 @@ class FhirGraph():
         '''
         self._graph = target_graph if target_graph is not None else Graph()
         self._graph.bind("fhir", FHIR)
+        self._graph.bind("rdf", RDF)
         self._graph.bind("ex", EX)
         self._source = data
         if 'entry' in self._source:
@@ -138,19 +140,30 @@ class FhirGraph():
                 if key in MAP_KEY_TO_RESOURCE_TYPE.keys():
                     self.add_direct_reference_to_resource(root_uri, key, value, MAP_KEY_TO_RESOURCE_TYPE[key])
                 else:
-                    if key not in DEPTH_LIMIT_ON:
-                        self.add_data_to_graph(value, root_uri)  # Recursive call for nested objects
-                    self._graph.add((root_uri, FHIR[key], Literal(value)))  # Link to the nested resource
+                    subNode = BNode()
+                    self._graph.add((root_uri, FHIR[key], subNode))  # nest a node for the key-value pair
+                    self.add_data_to_graph(value, subNode)  # Recursive call for nested objects
             elif isinstance(value, list):  # Handle lists
                 for item in value:
                     if isinstance(item, dict):  # If the item is a resource
-                        if key not in DEPTH_LIMIT_ON:
-                            self.add_data_to_graph(item, root_uri)  # Recursive call for nested resources
-                        self._graph.add((root_uri, FHIR[key], Literal(item)))
+                        subNode = BNode()
+                        self._graph.add((root_uri, FHIR[key], subNode))
+                        self.add_data_to_graph(item, subNode)  # Recursive call for nested resources
                     else:
-                        self._graph.add((root_uri, FHIR[key], Literal(item)))
+                        # key in ["given", "prefix", ...]
+                        subNode = BNode()
+                        self._graph.add((root_uri, FHIR[key], subNode))
+                        self._graph.add((subNode, FHIR.value, Literal(item)))
             else:
-                self._graph.add((root_uri, FHIR[key], Literal(value)))
+                if value == "{score}":
+                    continue
+                # handle primitives
+                elif key in ["status", "code", "unit", "system", "value", "active", "gender"]:
+                    subNode = BNode()
+                    self._graph.add((root_uri, FHIR[key], subNode))
+                    self._graph.add((subNode, FHIR.value, Literal(value)))
+                else:
+                    self._graph.add((root_uri, FHIR[key], Literal(value)))
 
     def generate(self, limit=5) -> Graph:
         '''generator method for FhirGraph'''
@@ -163,4 +176,66 @@ class FhirGraph():
                 break
         return self._graph
         # self.add_data_to_graph(data=self._source)
-    
+
+import unittest
+import json
+import glob
+
+class Test_FhirGraph(unittest.TestCase):
+    """Test cases for generating RDF graph from FHIR JSON Bundle"""
+
+    def test_parse_fhirbundle_to_rdfgraph(self):
+        """
+        Simple test to ensure FhirGraph is creating valid RDF
+        """
+        sample_bundle_path="./fhir/Alethea978_Crooks415_78480da7-7361-4c99-bfb9-339a403d9ae1.json"
+
+        large_multi_graph = Graph()
+        
+        with open(sample_bundle_path, mode='r', encoding='utf-8') as f:
+            fhir_bundle = json.load(f)
+            large_multi_fhirgraph = FhirGraph(fhir_bundle, large_multi_graph)
+            large_multi_graph = large_multi_fhirgraph.generate()
+        
+        print(len(large_multi_graph))
+
+        query="""
+        SELECT ?s ?p ?o
+        WHERE {
+            ?s ?p ?o
+        }
+        LIMIT 5
+        """
+        self.assertIsNotNone(large_multi_graph.query(query))
+
+
+    def test_parse_many_fhirbundle_to_rdfgraph(self):
+        """
+        Scaling up simple test to many fhir bundles
+        Note: this individual test takes over 20 seconds to run
+        """
+        
+        synthea_bundles = glob.glob("./fhir/*.json")
+
+        large_multi_graph = Graph()
+
+        for fpath in synthea_bundles:
+            with open(fpath, mode='r', encoding='utf-8') as f:
+                fhir_bundle = json.load(f)
+                large_multi_fhirgraph = FhirGraph(fhir_bundle, large_multi_graph)
+                large_multi_graph = large_multi_fhirgraph.generate()
+        
+        print(len(large_multi_graph))
+
+        query="""
+        SELECT ?s ?p ?o
+        WHERE {
+            ?s ?p ?o
+        }
+        LIMIT 5
+        """
+        self.assertIsNotNone(large_multi_graph.query(query))
+
+
+if __name__ == '__main__':
+    unittest.main()
