@@ -6,8 +6,8 @@ def reservoir_sampling(input_stream: list, k: int):
     """
     Given reservoir size `k` and input stream of size `N`
     Fill reservior with first `k` elements of the input stream
-    For each input stream element `x_i, i \\in {k+1, ..., N}`:
-        1. Uniformly generate a random number `j \\in {1, ..., i}
+    For each input stream element `x_i, i \\in {k, ..., N-1}`:
+        1. Uniformly generate a random number `j \\in {0, ..., i}
         2. If j<=k, replace the j-th element of the reservoir
     """
     N = len(input_stream)
